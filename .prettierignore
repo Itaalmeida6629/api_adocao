@@ -1,0 +1,7 @@
+node_modules/
+.env
+.sql
+dist/
+build/
+tests/*.rest
+.vscode/
