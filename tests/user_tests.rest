@@ -1,0 +1,160 @@
+### Configurações Globais
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ----------------------------------------------------
+### AUTENTICAÇÃO
+### ----------------------------------------------------
+
+# @name loginAdmin
+# Realizar login para obter o token do administrador
+POST {{baseUrl}}/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@exemplo.com",
+  "password": "senhaAdmin123"
+}
+
+###
+
+# @name loginAdopter
+# Realizar login para obter o token do adotante
+POST {{baseUrl}}/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": "adopter@exemplo.com",
+  "password": "senhaAdopter123"
+}
+
+### ----------------------------------------------------
+### CONFIGURAÇÃO DOS TOKENS AUTOMÁTICOS
+### ----------------------------------------------------
+@tokenAdmin = {{loginAdmin.response.body.token}}
+@tokenAdopter = {{loginAdopter.response.body.token}}
+
+### ----------------------------------------------------
+### ROTAS DE SUCESSO (USANDO TOKEN ADMIN QUANDO REQUERIDO)
+### ----------------------------------------------------
+
+### Criar Admin
+POST {{baseUrl}}/user/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Admin Principal",
+  "email": "admin@exemplo.com",
+  "password": "senhaAdmin123",
+  "phone": "54988888888",
+  "role": "admin"
+}
+
+### Criar novo usuário (Público)
+POST {{baseUrl}}/user/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Novo Adotante",
+  "email": "adopter@exemplo.com",
+  "password": "senhaAdopter123",
+  "phone": "54999999999",
+  "role": "adopter"
+}
+
+
+### Listar todos os usuários (Apenas Admin)
+GET {{baseUrl}}/user/users
+Authorization: Bearer {{tokenAdmin}}
+
+
+### Buscar usuário por ID (Apenas Admin)
+GET {{baseUrl}}/user/users/1
+Authorization: Bearer {{tokenAdmin}}
+
+
+### Atualizar dados do usuário (Apenas Admin liberado nas rotas)
+PUT {{baseUrl}}/user/users/1
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Admin Atualizado1",
+  "phone": "54988888888"
+}
+
+### Atualizar dados do usuário (Adopter atualizando seu próprio perfil)
+PUT {{baseUrl}}/user/users/2
+Authorization: Bearer {{tokenAdopter}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Adotante Atualizado1",
+  "phone": "54977777777"
+}
+
+### ----------------------------------------------------
+### CENÁRIOS DE ERRO
+### ----------------------------------------------------
+
+# 1. Erro no Login: Email ou senha incorretos
+POST {{baseUrl}}/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@exemplo.com",
+  "password": "senha_errada"
+}
+
+###
+
+# 2. Erro na Criação: Email Duplicado (Retorna "E-mail já cadastrado")
+POST {{baseUrl}}/user/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Clone do Admin",
+  "email": "admin@exemplo.com",
+  "password": "senha123",
+  "phone": "54988888888",
+  "role": "adopter"
+}
+
+###
+
+# 3. Erro na Criação: Role inválida (Retorna 'Role deve ser "admin" ou "adopter"')
+POST {{baseUrl}}/user/users
+Content-Type: {{contentType}}
+
+{
+  "name": "Usuário Inválido",
+  "email": "invalido@exemplo.com",
+  "password": "senha123",
+  "phone": "54999999999",
+  "role": "invalid_role"
+}
+
+###
+
+# 4. Erro de Autorização: Adopter tentando listar todos os usuários (403 - Não autorizado pelo middleware)
+GET {{baseUrl}}/user/users
+Authorization: Bearer {{tokenAdopter}}
+
+###
+
+# 5. Erro de Autenticação: Acesso sem token nas rotas protegidas (401 - Não autenticado)
+GET {{baseUrl}}/user/users
+
+###
+
+# 6. Erro de Busca: Usuário com ID Inexistente (Retorna "Usuário não encontrado")
+GET {{baseUrl}}/user/users/999999
+Authorization: Bearer {{tokenAdmin}}
+
+### ----------------------------------------------------
+### DELEÇÃO
+### ----------------------------------------------------
+
+# Deletar registro de usuário (Apenas Admin)
+DELETE {{baseUrl}}/user/users/2
+Authorization: Bearer {{tokenAdmin}}

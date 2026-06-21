@@ -3,6 +3,7 @@ import globals from 'globals'
 import { defineConfig } from 'eslint/config'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
 import prettier from 'eslint-config-prettier'
+
 export default defineConfig([
     js.configs.recommended,
     {
@@ -17,10 +18,8 @@ export default defineConfig([
         },
         rules: {
             'prefer-const': 'error',
-            'no-console': 'warn',
-            'consistent-return': 'warn',
             'prefer-template': 'warn',
-            'prettier/prettier': 'error', 
+            'prettier/prettier': ['error', {}, { usePrettierrc: true }], 
         },
     },
     prettier,
