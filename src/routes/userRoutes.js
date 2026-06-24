@@ -7,9 +7,9 @@ const router = express.Router()
 router.post('/login', UserController.login)
 router.post('/users', UserController.createUser)
 
-router.get('/users', authenticateToken, UserController.getAllUsers)
 router.put('/users/:id', authenticateToken, UserController.updateUser)
 
+router.get('/users', authenticateToken, authorizeRole('admin'), UserController.getAllUsers)
 router.get('/users/:id', authenticateToken, authorizeRole('admin'), UserController.getUserById)
 router.delete('/users/:id', authenticateToken, authorizeRole('admin'), UserController.deleteUser)
 

@@ -56,7 +56,7 @@ Content-Type: {{contentType}}
 
 {
   "name": "Novo Adotante",
-  "email": "adopter@exemplo.com",
+  "email": "adopter@exemplo.com.br",
   "password": "senhaAdopter123",
   "phone": "54999999999",
   "role": "adopter"
@@ -84,7 +84,7 @@ Content-Type: {{contentType}}
 }
 
 ### Atualizar dados do usuário (Adopter atualizando seu próprio perfil)
-PUT {{baseUrl}}/user/users/2
+PUT {{baseUrl}}/user/users/3
 Authorization: Bearer {{tokenAdopter}}
 Content-Type: {{contentType}}
 
@@ -156,5 +156,5 @@ Authorization: Bearer {{tokenAdmin}}
 ### ----------------------------------------------------
 
 # Deletar registro de usuário (Apenas Admin)
-DELETE {{baseUrl}}/user/users/2
+DELETE {{baseUrl}}/user/users/4
 Authorization: Bearer {{tokenAdmin}}
