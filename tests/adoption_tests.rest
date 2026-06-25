@@ -1,0 +1,123 @@
+### Configurações Globais
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ----------------------------------------------------
+### AUTENTICAÇÃO
+### ----------------------------------------------------
+
+# @name loginAdmin
+# Realizar login para obter o token do administrador
+POST {{baseUrl}}/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@exemplo.com",
+  "password": "senhaAdmin123"
+}
+
+###
+
+# @name loginAdopter
+# Realizar login para obter o token do adotante
+POST {{baseUrl}}/user/login
+Content-Type: {{contentType}}
+
+{
+  "email": "adopter@exemplo.com",
+  "password": "senhaAdopter123"
+}
+
+### ----------------------------------------------------
+### CONFIGURAÇÃO DOS TOKENS AUTOMÁTICOS
+### ----------------------------------------------------
+@tokenAdmin = {{loginAdmin.response.body.token}}
+@tokenAdopter = {{loginAdopter.response.body.token}}
+
+### ----------------------------------------------------
+### ROTAS DE SUCESSO
+### ----------------------------------------------------
+
+# Realizar adoção de um pet já cadastrado e disponível (Apenas Adopter)
+POST {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdopter}}
+Content-Type: {{contentType}}
+
+{
+  "pet_id": 3
+}
+
+###
+
+# Listar todas as adoções (Apenas Admin)
+GET {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdmin}}
+
+### ----------------------------------------------------
+### CENÁRIOS DE ERRO - ADOÇÕES
+### ----------------------------------------------------
+
+# 1. Erro de Autorização: Admin tentando adotar um pet
+POST {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: {{contentType}}
+
+{
+  "pet_id": 1
+}
+
+###
+
+# 2. Erro de Autorização: Adopter tentando listar adoções
+GET {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdopter}}
+
+###
+
+# 3. Erro de Autenticação: Acesso sem token nas rotas protegidas
+GET {{baseUrl}}/adoptions/adoptions
+
+###
+
+# 4. Erro na Criação: Campos obrigatório ausente
+POST {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdopter}}
+Content-Type: {{contentType}}
+
+{}
+
+###
+
+# 5. Erro na Criação: Pet inexistente
+POST {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdopter}}
+Content-Type: {{contentType}}
+
+{
+  "pet_id": 999999
+}
+
+###
+
+# 6. Erro na Criação: Mesmo usuário tentando adotar o mesmo pet novamente
+POST {{baseUrl}}/adoptions/adoptions
+Authorization: Bearer {{tokenAdopter}}
+Content-Type: {{contentType}}
+
+{
+  "pet_id": 3
+}
+
+### ----------------------------------------------------
+### DELEÇÃO
+### ----------------------------------------------------
+
+# Deletar registro de adoção criado neste arquivo (Apenas Admin)
+DELETE {{baseUrl}}/adoptions/adoptions/2
+Authorization: Bearer {{tokenAdmin}}
+
+###
+
+# Erro de Deleção: Adoção inexistente
+DELETE {{baseUrl}}/adoptions/adoptions/999999
+Authorization: Bearer {{tokenAdmin}}
