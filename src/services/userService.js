@@ -69,6 +69,10 @@ class UserService {
         throw new Error(`${campo} é obrigatório`)
       }
     }
+
+    if (data.name.trim() === '') {
+      throw new Error('Nome não pode ser vazio')
+    }
     if (!validateEmail(data.email)) {
       throw new Error('Email Inválido')
     }
@@ -99,12 +103,20 @@ class UserService {
     if (Object.keys(payload).length === 0) {
       throw new Error('Nenhum campo para atualizar')
     }
-
+    if (payload.name && payload.name.trim() === '') {
+      throw new Error('Nome não pode ser vazio')
+    }
     if (payload.email) {
       if (!validateEmail(payload.email)) {
         throw new Error('Email Inválido')
       }
-
+      if (payload.role) {
+        const roleNormalizada = payload.role.trim().toLowerCase()
+        if (!role.includes(roleNormalizada)) {
+          throw new Error('Role deve ser "admin" ou "adopter"')
+        }
+        payload.role = roleNormalizada
+      }
       const existingUser = await UserModel.findByEmail(payload.email)
       if (existingUser && String(existingUser.id) !== String(id)) {
         throw new Error('E-mail já cadastrado')
