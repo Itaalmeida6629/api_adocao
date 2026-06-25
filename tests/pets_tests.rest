@@ -3,12 +3,12 @@
 @contentType = application/json
 
 ### ----------------------------------------------------
-### AUTENTICAÇÃO (Necessária para obter o Token de Admin)
+### AUTENTICAÇÃO
 ### ----------------------------------------------------
 
 # @name loginAdmin
 # Realizar login para obter o token do administrador
-POST {{baseUrl}}/user/login
+POST {{baseUrl}}/login
 Content-Type: {{contentType}}
 
 {
@@ -20,7 +20,7 @@ Content-Type: {{contentType}}
 
 # @name loginAdopter
 # Realizar login para obter o token de um adotante comum
-POST {{baseUrl}}/user/login
+POST {{baseUrl}}/login
 Content-Type: {{contentType}}
 
 {
@@ -38,14 +38,14 @@ Content-Type: {{contentType}}
 ### ROTAS DE SUCESSO
 ### ----------------------------------------------------
 
-# Listar pets disponíveis (Rota PÚBLICA - Não precisa de Token)
-GET {{baseUrl}}/pets/pets/available
+# Listar pets disponíveis (Rota pública)
+GET {{baseUrl}}/pets/available
 
 ###
 
 # Criar novo pet (Apenas Admin)
 # @name criarPet
-POST {{baseUrl}}/pets/pets
+POST {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdmin}}
 Content-Type: {{contentType}}
 
@@ -54,53 +54,51 @@ Content-Type: {{contentType}}
   "age": 2,
   "species": "Gato",
   "size": "medium",
-  "status": "available"
+  "description": "Fofa e brincalhona, adora carinho e atenção."
 }
 
 ###
 
 # Listar todos os pets (Apenas Admin)
-GET {{baseUrl}}/pets/pets
+GET {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdmin}}
 
 ###
 
 # Buscar pet por ID (Apenas Admin)
-GET {{baseUrl}}/pets/pets/1
+GET {{baseUrl}}/pets/1
 Authorization: Bearer {{tokenAdmin}}
 
 ###
 
 # Atualizar dados do pet (Apenas Admin)
-PUT {{baseUrl}}/pets/pets/1
+PUT {{baseUrl}}/pets/1
 Authorization: Bearer {{tokenAdmin}}
 Content-Type: {{contentType}}
 
 {
-  "age": 3,
-  "status": "adopted"
+  "age": 3
 }
 
 ### ----------------------------------------------------
 ### CENÁRIOS DE ERRO - PETS
 ### ----------------------------------------------------
 
-# 1. Erro na Criação: Campo obrigatório ausente (Retorna "name é obrigatório")
-POST {{baseUrl}}/pets/pets
+# 1. Erro na Criação: Campo obrigatório ausente
+POST {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdmin}}
 Content-Type: {{contentType}}
 
 {
   "age": 1,
   "species": "Gato",
-  "size": "small",
-  "status": "available"
+  "size": "small"
 }
 
 ###
 
-# 2. Erro na Criação: Tamanho inválido (Retorna "Tamanho inválido. Tamanhos válidos: small, medium, large")
-POST {{baseUrl}}/pets/pets
+# 2. Erro na Criação: Tamanho inválido
+POST {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdmin}}
 Content-Type: {{contentType}}
 
@@ -108,14 +106,13 @@ Content-Type: {{contentType}}
   "name": "Rex",
   "age": 4,
   "species": "Cachorro",
-  "size": "giant",
-  "status": "available"
+  "size": "giant"
 }
 
 ###
 
-# 3. Erro na Criação: Idade negativa (Retorna "Idade inválida...")
-POST {{baseUrl}}/pets/pets
+# 3. Erro na Criação: Idade negativa
+POST {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdmin}}
 Content-Type: {{contentType}}
 
@@ -123,14 +120,13 @@ Content-Type: {{contentType}}
   "name": "Baleia",
   "age": -1,
   "species": "Gato",
-  "size": "small",
-  "status": "available"
+  "size": "small"
 }
 
 ###
 
-# 4. Erro de Autorização: Adotante tentando criar um pet (Retorna 403 - Não autorizado)
-POST {{baseUrl}}/pets/pets
+# 4. Erro de Autorização: Adotante tentando criar um pet
+POST {{baseUrl}}/pets
 Authorization: Bearer {{tokenAdopter}}
 Content-Type: {{contentType}}
 
@@ -138,18 +134,17 @@ Content-Type: {{contentType}}
   "name": "Pipoca",
   "age": 1,
   "species": "Hamster",
-  "size": "small",
-  "status": "available"
+  "size": "small"
 }
 
 ###
 
-# 5. Erro de Busca: Pet com ID Inexistente (Retorna "Pet não encontrado")
-GET {{baseUrl}}/pets/pets/999999
+# 5. Erro de Busca: Pet com ID inexistente
+GET {{baseUrl}}/pets/999999
 Authorization: Bearer {{tokenAdmin}}
 
 ###
 
-# 6. Erro de Deleção: Pet já adotado (Sua Service barra se o status não for 'available')
-DELETE {{baseUrl}}/pets/pets/2
+# 6. Erro de Deleção: Pet já adotado
+DELETE {{baseUrl}}/pets/9
 Authorization: Bearer {{tokenAdmin}}

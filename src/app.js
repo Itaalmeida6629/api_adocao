@@ -5,16 +5,16 @@ const errorMiddleware = require('./middlewares/errorMiddleware')
 
 const app = express()
 const userRoutes = require('./routes/userRoutes.js')
-const petsRoutes = require('./routes/petsRoutes.js')
+const petRoutes = require('./routes/petRoutes.js')
 const adoptionRoutes = require('./routes/adoptionRoutes.js')
 
 app.use(cors())
 app.use(helmet())
 app.use(express.json())
 
-app.use('/user', userRoutes)
-app.use('/pets', petsRoutes)
-app.use('/adoptions', adoptionRoutes)
+app.use(userRoutes)
+app.use(petRoutes)
+app.use(adoptionRoutes)
 
 app.use(errorMiddleware)
 

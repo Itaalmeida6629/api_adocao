@@ -1,4 +1,4 @@
-const PetsModel = require('../models/petsModel')
+const PetsModel = require('../models/petModel')
 
 const validSizes = ['small', 'medium', 'large']
 const validStatuses = ['available', 'adopted']
@@ -29,7 +29,7 @@ class PetsService {
   }
 
   static async createPet(data) {
-    const camposObrigatorios = ['name', 'age', 'species', 'size', 'status']
+    const camposObrigatorios = ['name', 'age', 'species', 'size']
 
     for (const campo of camposObrigatorios) {
       if (!data[campo]) {
@@ -43,10 +43,6 @@ class PetsService {
     if (!validSizes.includes(sizeNormalized)) {
       throw new Error(`Tamanho inválido. Tamanho válidos: small, medium, large`)
     }
-    const statusNormalized = data.status.toLowerCase()
-    if (!validStatuses.includes(statusNormalized)) {
-      throw new Error(`Status inválido. Status válidos: available, adopted`)
-    }
     if (isNaN(data.age) || data.age < 0) {
       throw new Error('Idade inválida. A idade deve ser um número não negativo')
     }
@@ -56,7 +52,7 @@ class PetsService {
     if (data.description && data.description.trim() === '') {
       throw new Error('Descrição inválida.')
     }
-    const pet = { ...data, size: sizeNormalized, status: statusNormalized }
+    const pet = { ...data, size: sizeNormalized, status: 'available' }
     return await PetsModel.create(pet)
   }
 

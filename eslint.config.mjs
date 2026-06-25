@@ -5,22 +5,22 @@ import eslintPluginPrettier from 'eslint-plugin-prettier'
 import prettier from 'eslint-config-prettier'
 
 export default defineConfig([
-    js.configs.recommended,
-    {
-        files: ['**/*.{js,cjs}'],
-        languageOptions: {
-            sourceType: 'commonjs',
-            globals: globals.node,
-            ecmaVersion: 'latest',
-        },
-        plugins: {
-            prettier: eslintPluginPrettier,
-        },
-        rules: {
-            'prefer-const': 'error',
-            'prefer-template': 'warn',
-            'prettier/prettier': ['error', {}, { usePrettierrc: true }], 
-        },
+  js.configs.recommended,
+  {
+    files: ['**/*.{js,cjs}'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: globals.node,
+      ecmaVersion: 'latest',
     },
-    prettier,
+    plugins: {
+      prettier: eslintPluginPrettier,
+    },
+    rules: {
+      'prefer-const': 'error',
+      'prefer-template': 'warn',
+      'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+    },
+  },
+  prettier,
 ])

@@ -1,4 +1,4 @@
-const PetsController = require('../controllers/petsController')
+const PetsController = require('../controllers/petController')
 
 const { authenticateToken, authorizeRole } = require('../middlewares/authMiddleware')
 const express = require('express')

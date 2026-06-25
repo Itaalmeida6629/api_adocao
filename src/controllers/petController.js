@@ -1,4 +1,4 @@
-const PetsService = require('../services/petsService')
+const PetsService = require('../services/petService')
 
 class PetsController {
   static async getAvailablePets(req, res, next) {

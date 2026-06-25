@@ -1,5 +1,5 @@
 const AdoptionModel = require('../models/adoptionModel')
-const PetsModel = require('../models/petsModel')
+const PetsModel = require('../models/petModel')
 
 class AdoptionService {
   static async getAllAdoptions() {
@@ -11,6 +11,10 @@ class AdoptionService {
   }
 
   static async createAdoption(data, usuarioLogado) {
+    if (usuarioLogado.role !== 'adopter') {
+      throw new Error('Acesso negado: apenas adotantes podem adotar pets')
+    }
+
     const camposObrigatorios = ['pet_id']
 
     for (const campo of camposObrigatorios) {
